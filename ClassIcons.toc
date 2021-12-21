@@ -1,0 +1,18 @@
+## Interface: 20502
+
+## Title: ClassIcons
+
+## Version: @project-version@
+
+## Notes: Displays class icons near your target's and party members' portraits.
+
+## Author: |cffFF7D0AHoochie|r @EU-Dethecus (previously Yorgl/Reiswind/Slake)
+
+## SavedVariables: CLASSICONS_CONFIG
+
+## OptionalDeps: LibBabble-CreatureType-3.0
+
+Libs\LibBabble-CreatureType-3.0\LibStub\LibStub.lua
+Libs\LibBabble-CreatureType-3.0\lib.xml
+
+ClassIcons.xml
