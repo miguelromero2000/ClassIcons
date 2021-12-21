@@ -1,8 +1,8 @@
-## Interface: 90002
+## Interface: 90105
 
 ## Title: ClassIcons |cffC0C0C0BfA release|r
 
-## Version: 9.0
+## Version: @project-version@
 
 ## Notes: Displays class icons near your target's and party members' portraits.
 
