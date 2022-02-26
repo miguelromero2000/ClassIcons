@@ -304,10 +304,6 @@ function ClassIcons_OnEvent(self, event, arg1)
 	end;
 end;
 
-function ClassIcons_Icon_OnLoad(self)
-	self:SetFrameLevel(self:GetFrameLevel()+2);
-end;
-
 function ClassIcons_UpdatePlayerFrame()
 	ClassIcons_UpdateIcon("PlayerFrame", "player", CLASSICONS_CONFIG.Player);
 end;
