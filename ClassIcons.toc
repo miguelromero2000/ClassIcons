@@ -1,12 +1,12 @@
-## Interface: 90105
+## Interface: 90200
 
-## Title: ClassIcons |cffC0C0C0BfA release|r
+## Title: ClassIcons |cffC0C0C0Shadowlands release|r
 
 ## Version: @project-version@
 
 ## Notes: Displays class icons near your target's and party members' portraits.
 
-## Author: |cffFF7D0AHoochie|r @EU-Dethecus (previously Yorgl/Reiswind/Slake)
+## Author: |cffFF7D0AHoochie|r @EU-Venoxis (previously Yorgl/Reiswind/Slake)
 
 ## SavedVariables: CLASSICONS_CONFIG
 
