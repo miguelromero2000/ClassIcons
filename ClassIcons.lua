@@ -45,6 +45,7 @@ function ClassIcons_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
 	self:RegisterEvent("PLAYER_TARGET_CHANGED");
 	self:RegisterEvent("GROUP_ROSTER_UPDATE");
+	self:RegisterEvent("PLAYER_FOCUS_CHANGED");
 	self:RegisterEvent("PARTY_MEMBER_ENABLE");
 end;
 
@@ -84,6 +85,7 @@ function ClassIcons_CmdHandler(msg)
 
 		ClassIcons_UpdatePlayerFrame();
 		ClassIcons_UpdateTargetFrame();
+		ClassIcons_UpdateFocusFrame();
 		ClassIcons_UpdatePartyFrames();
 
 		return;
@@ -95,6 +97,7 @@ function ClassIcons_CmdHandler(msg)
 
 		ClassIcons_UpdatePlayerFrame();
 		ClassIcons_UpdateTargetFrame();
+		ClassIcons_UpdateFocusFrame();
 		ClassIcons_UpdatePartyFrames();
 
 		return;
@@ -132,6 +135,22 @@ function ClassIcons_CmdHandler(msg)
 		return;
 	end;
 
+	if ( cmd == "focus" ) then
+		if ( arg1 == "on" ) then
+			CLASSICONS_CONFIG.Focus = true;
+		elseif ( arg1 == "off" ) then
+			CLASSICONS_CONFIG.Focus = false;
+		else
+			CLASSICONS_CONFIG.Focus = not CLASSICONS_CONFIG.Focus;
+		end;
+
+		ClassIcons_Print("Focus icon "..Ternary(CLASSICONS_CONFIG.Focus, "on.", "off."));
+
+		ClassIcons_UpdateFocusFrame();
+
+		return;
+	end;
+
 	if ( cmd == "party" ) then
 		if ( arg1 == "on" ) then
 			CLASSICONS_CONFIG.Party = true;
@@ -162,6 +181,8 @@ function ClassIcons_CmdHandler(msg)
 			CLASSICONS_CONFIG.TargetAngle = arg2;
 		elseif ( arg1 == "party" ) then
 			CLASSICONS_CONFIG.PartyAngle = arg2;
+		elseif ( arg1 == "focus" ) then
+			CLASSICONS_CONFIG.FocusAngle = arg2;
 		else
 			ClassIcons_Print("Please enter one of player / party / target.");
 			return;
@@ -190,8 +211,8 @@ function ClassIcons_CmdHandler(msg)
 	-- Unknown command input, print usage statement
 	ClassIcons_Print("Command list: ");
 	ClassIcons_Print("on/off - control all icon visibility.", false);
-	ClassIcons_Print("player/party/target [on/off] - control individual icon visibility.", false);
-	ClassIcons_Print("angle [player/party/target] [number] - control the angle icons are set to.", false);
+	ClassIcons_Print("player/party/target/focus [on/off] - control individual icon visibility.", false);
+	ClassIcons_Print("angle [player/party/target/focus] [number] - control the angle icons are set to.", false);
 	ClassIcons_Print("mobsuse [class/type/none] - control whether monster icons display class, type, or are hidden.", false);
 end;
 
@@ -255,6 +276,14 @@ function ClassIcons_UpdateIconPositions()
 	TargetFrameClassIcon:ClearAllPoints();
 	TargetFrameClassIcon:SetPoint("CENTER", TargetFrame.portrait, "CENTER", x, y);
 
+	--FOCUS
+	r = floor(FocusFrame.portrait:GetWidth()/2);
+	x = ceil(r*cos(CLASSICONS_CONFIG.FocusAngle));
+	y = ceil(r*sin(CLASSICONS_CONFIG.FocusAngle));
+
+	FocusFrameClassIcon:ClearAllPoints();
+	FocusFrameClassIcon:SetPoint("CENTER", FocusFrame.portrait, "CENTER", x, y);
+
 	--PARTY
 	r = floor(PartyMemberFrame1.portrait:GetWidth()/2);
 	x = ceil(r*cos(CLASSICONS_CONFIG.PartyAngle));
@@ -277,11 +306,13 @@ local DBSetup = {
 	["Active"] = true;
 	["Player"] = true;
 	["Party"] = true;
+	["Focus"] = true;
 	["Target"] = true;
 	["MobsUse"] = "type";
 	["PlayerAngle"] = 45;
 	["PartyAngle"] = 45;
 	["TargetAngle"] = 135;
+	["FocusAngle"] = 135;
 };
 
 function ClassIcons_OnEvent(self, event, arg1)
@@ -299,6 +330,8 @@ function ClassIcons_OnEvent(self, event, arg1)
 		ClassIcons_UpdatePlayerFrame();
 	elseif ( event == "PLAYER_TARGET_CHANGED" ) then
 		ClassIcons_UpdateTargetFrame();
+	elseif ( event == "PLAYER_FOCUS_CHANGED" ) then
+		ClassIcons_UpdateFocusFrame();
 	elseif ( event == "GROUP_ROSTER_UPDATE" or event == "PARTY_MEMBER_ENABLE" ) then
 		ClassIcons_UpdatePartyFrames();
 	end;
@@ -310,6 +343,10 @@ end;
 
 function ClassIcons_UpdateTargetFrame()
 	ClassIcons_UpdateIcon("TargetFrame", "target", CLASSICONS_CONFIG.Target);
+end;
+
+function ClassIcons_UpdateFocusFrame()
+	ClassIcons_UpdateIcon("FocusFrame", "focus", CLASSICONS_CONFIG.Focus);
 end;
 
 function ClassIcons_UpdatePartyFrames()
