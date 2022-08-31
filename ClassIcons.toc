@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90207
 
 ## Title: ClassIcons |cffC0C0C0Shadowlands release|r
 
