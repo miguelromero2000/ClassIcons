@@ -226,7 +226,10 @@ function ClassIcons_UpdateIcon(frame, unit, setting)
 	local icon = _G[frame.."ClassIcon"];
 	local texture = _G[frame.."ClassIconTexture"];
 
-	if ( not icon ) or ( not texture ) then
+	if ( not icon ) then
+		return;
+	end;
+	if ( not texture ) then
 		return;
 	end;
 
@@ -260,6 +263,8 @@ end;
 
 function ClassIcons_UpdateIconPositions()
 	local x,y,r;
+	local partyMemberCount;
+	partyMemberCount = 0;
 
 	--PLAYER
 	r = floor(PlayerFrame.portrait:GetWidth()/2);
@@ -286,14 +291,38 @@ function ClassIcons_UpdateIconPositions()
 	FocusFrameClassIcon:SetPoint("CENTER", FocusFrame.portrait, "CENTER", x, y);
 
 	--PARTY
-	r = floor(PartyMemberFrame1.portrait:GetWidth()/2);
+	if PartyFrame then
+		for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+			partyMemberCount = partyMemberCount + 1;
+			if memberFrame:IsShown() then
+				-- print(memberFrame, memberFrame.unitToken)
+				if partyMemberCount == 1 then
+					r = floor(memberFrame.portrait:GetWidth()/2);
 	x = ceil(r*cos(CLASSICONS_CONFIG.PartyAngle));
 	y = ceil(r*sin(CLASSICONS_CONFIG.PartyAngle));
+				end
+				-- create small icon frame
+				local memberFrameName = memberFrame:GetName();
+				local partyMemberFrameVar = CreateFrame("Frame", partyMemberCount.."ClassIcon", memberFrame);  -- modifieddd
+				partyMemberFrameVar:SetWidth(24);
+				partyMemberFrameVar:SetHeight(24);
+				partyMemberFrameVar:SetFrameStrata("MEDIUM");
+				partyMemberFrameVar:SetParent(memberFrame); -- reference to frame
 
-	for i = 1, 4 do
-		_G["PartyMemberFrame"..i.."ClassIcon"]:ClearAllPoints();
-		_G["PartyMemberFrame"..i.."ClassIcon"]:SetPoint("CENTER", _G["PartyMemberFrame"..i].portrait, "CENTER", x, y);
-	end;
+		        -- create default texture
+                partyMemberFrameVar:ClearAllPoints();
+				local t = partyMemberFrameVar:CreateTexture(partyMemberCount.."ClassIconTexture","BACKGROUND")
+				-- t:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Factions.blp")
+				t:SetAllPoints(partyMemberFrameVar)
+				partyMemberFrameVar.texture = t
+				-- update texture with class
+				ClassIcons_UpdateIcon(partyMemberCount, "party1", CLASSICONS_CONFIG.Party);
+				-- set position and show
+				partyMemberFrameVar:SetPoint("CENTER", memberFrame.portrait, "CENTER", x-4, y);
+				partyMemberFrameVar:Show();
+			end
+		end
+	end
 end;
 
 --if savedVar is nil or wrong type set it to a standard value
